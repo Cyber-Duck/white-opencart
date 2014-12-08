@@ -1,0 +1,11 @@
+{
+    "name": "CyberDuck/white-opencart",
+    "description": "White Opencart payments",
+    "type": "opencart-extension",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.2.0",
+        "white/white": "1.*"
+    },
+    "minimum-stability": "dev"
+}

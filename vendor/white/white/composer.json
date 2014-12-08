@@ -1,0 +1,15 @@
+{
+  "name": "white/white",
+  "description": "White makes accepting online payments in the Middle East a piece of cake",
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "4.2.*"
+  },
+  "lib-curl": "*",
+  "autoload": {
+    "psr-0": { 
+      "White": "src/",
+      "White\\Test": "tests/"
+    }
+  }
+}
