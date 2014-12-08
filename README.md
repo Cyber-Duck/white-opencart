@@ -3,6 +3,8 @@ white-opencart
 
 This is an OpenCart Extension for [White payments](https://whitepayments.com/)
 
+Tested on Opencart 2.0.0.0
+
 ## Installation
 
 * Download the latest version [here](https://github.com/Cyber-Duck/white-opencart/archive/master.zip).
