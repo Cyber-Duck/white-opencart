@@ -1,8 +1,15 @@
 {
-    "name": "CyberDuck/white-opencart",
+    "name": "cyberduck/white-opencart",
     "description": "White Opencart payments",
     "type": "opencart-extension",
+    "keywords":["payment", "white", "opencart"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Speakman",
+            "email": "ben@cyber-duck.co.uk"
+        }
+    ],
     "require": {
         "php": ">=5.2.0",
         "white/white": "1.*"
