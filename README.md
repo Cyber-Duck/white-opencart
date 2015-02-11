@@ -8,7 +8,7 @@ Tested on Opencart 2.0.0.0
 ## Installation
 
 * Download the latest version [here](https://github.com/Cyber-Duck/white-opencart/archive/master.zip).
-* If you are already using composer in your opencart project you can just add `"white/white": "1.*"` to your composer.json and then ignore the included vendor folder.
+* If you are already using composer in your opencart project you can just add `"white/white": "2.0.*"` to your composer.json and then ignore the included vendor folder.
 * Otherwise upload the admin, catalog and vendor folders to the root of your site.
 
 ## Config

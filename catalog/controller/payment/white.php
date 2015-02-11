@@ -12,7 +12,7 @@ class ControllerPaymentWhite extends Controller
         $data['text_loading'] = $this->language->get('text_loading');
         $data['entry_cc_number'] = $this->language->get('entry_cc_number');
         $data['entry_cc_expire_date'] = $this->language->get('entry_cc_expire_date');
-        $data['entry_cc_cvv2'] = $this->language->get('entry_cc_cvv2');
+        $data['entry_cc_cvc'] = $this->language->get('entry_cc_cvc');
 
         $data['button_confirm'] = $this->language->get('button_confirm');
 
@@ -64,7 +64,7 @@ class ControllerPaymentWhite extends Controller
             White::setApiKey($this->config->get('white_secret_api'));
 
             $result = White_Charge::create(array(
-                "amount"      => $this->request->post['amount'],
+                "amount"      => $this->request->post['amount'] * 100,
                 "currency"    => $this->request->post['currency'],
                 "card"        => $this->request->post['card'],
                 "description" => "Charge for order: " . $this->session->data['order_id']
@@ -80,7 +80,7 @@ class ControllerPaymentWhite extends Controller
 
         if (!$error) {
 
-            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('white_order_status_id'), 'Charge added: ' . $result['tag'], false);
+            $this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('white_order_status_id'), 'Charge added: ' . $result['id'], false);
             $json['redirect'] = $this->url->link('checkout/success', '', 'SSL');
 
         } else {

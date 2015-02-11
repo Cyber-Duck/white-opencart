@@ -1,11 +1,6 @@
 <?php
-
 /**
  * Generic White error
- * 
- * @author Yazin Alirhayim <yazin@whitepayments.com>
- * @link https://whitepayments.com/docs/
- * @license http://opensource.org/licenses/MIT
  */
 
 class White_Error extends \Exception
@@ -18,12 +13,20 @@ class White_Error extends \Exception
   protected $httpStatus;
 
   /**
+  * Error Code
+  * @var string
+  */
+  protected $errorCode;
+
+  /**
   * @param string $message a human readable message
+  * @param string $errorCode the specific reason the error occured
   * @param int $httpStatus the HTTP status code
   */
-  public function __construct($message, $httpStatus)
+  public function __construct($message, $errorCode, $httpStatus)
   {
     parent::__construct($message);
+    $this->errorCode = $errorCode;
     $this->httpStatus = $httpStatus;
   }
 
@@ -35,5 +38,15 @@ class White_Error extends \Exception
   public function getHttpStatus()
   {
     return $this->httpStatus;
+  }
+
+  /**
+  * Get Error Code
+  *
+  * @return string
+  */
+  public function getErrorCode()
+  {
+    return $this->errorCode;
   }
 }

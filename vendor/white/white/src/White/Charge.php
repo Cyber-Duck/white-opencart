@@ -14,9 +14,10 @@ class White_Charge
   * 
   * @param array $data the data for the transaction
   * @return array the result of the transaction
-  * @throws White_Error_Card if the card could not be accepted
-  * @throws White_Error_Parameters if any of the parameters is invalid
   * @throws White_Error_Authentication if the API Key is invalid
+  * @throws White_Error_Banking if the card could not be accepted
+  * @throws White_Error_Processing if the there's a failure from White
+  * @throws White_Error_Request if any of the parameters is invalid
   * @throws White_Error if there is a general error in the API endpoint
   * @throws Exception for any other errors
   */
@@ -25,10 +26,11 @@ class White_Charge
     $url = White::getEndPoint('charge');
 
     $ch = curl_init();
-    curl_setopt($ch,CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CAINFO, White::getCaPath());
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_USERPWD, White::getApiKey() . ':');
-    curl_setopt($ch,CURLOPT_POST, true);
-    curl_setopt($ch,CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = json_decode(curl_exec($ch), true);
 
@@ -38,7 +40,7 @@ class White_Charge
     if( $result === false || $errno != 0 ) {
       // Do error checking
       throw new Exception(curl_error($ch));
-    } else if($info['http_code'] != 200) {
+    } else if($info['http_code'] < 200 || $info['http_code'] > 299) {
       // Got a non-200 error code.
       White::handleErrors($result, $info['http_code']);
     }
@@ -61,7 +63,8 @@ class White_Charge
     $url = White::getEndPoint('charge_list');
 
     $ch = curl_init();
-    curl_setopt($ch,CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CAINFO, White::getCaPath());
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_USERPWD, White::getApiKey() . ':');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = json_decode(curl_exec($ch), true);
@@ -72,7 +75,7 @@ class White_Charge
     if( $result === false || $errno != 0 ) {
       // Do error checking
       throw new Exception(curl_error($ch));
-    } else if($info['http_code'] != 200) {
+    } else if($info['http_code'] < 200 || $info['http_code'] > 299) {
       // Got a non-200 error code.
       White::handleErrors($result, $info['http_code']);
     }

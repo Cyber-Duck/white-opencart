@@ -4,33 +4,43 @@ White makes accepting payments in the Middle East ridiculously easy. Sign up for
 
 ## Getting Started
 
-Using White with your PHP project is simple. If you're using [Composer](https://getcomposer.org) (and really, who isn't these days amirite?), you just need to add one line to your `composer.json` file:
+Using White with your PHP project is simple. 
+
+If you're using [Composer](https://getcomposer.org/doc/00-intro.md#installation-nix) (and really, who isn't these days amirite?), you can simply run:
+
+```bash
+php composer.phar require white/white
+```
+
+.. or add a line to your `composer.json` file:
 
 ```json
 {
     "require": {
-        "white/white": "1.*"
+        "white/white": "*"
     }
 }
 ```
 
 Now, running `php composer.phar install` will pull the library directly to your local `vendor` folder.
 
+**Note:** If you're running on a shared host, then you may need to set the `allow_url_fopen` flag for the `php` commands. For the install command, for example, this would look like `php -d allow_url_fopen=On composer.phar install`. The `-d` overrides the `php.ini` settings, where `allow_url_fopen` is usually set to `Off`.
+
 ## Using White
 
-You'll need an account with White if you don't already have one (grab one real quick at [whitepayments.com](http://whitepayments.com) and come back .. we'll wait).
+You'll need an account with White if you don't already have one (grab one real quick at [whitepayments.com](http://whitepayments.com) and come right back .. we'll wait).
 
-Got an account? Great .. let's get busy.
+Got an account? Great .. let's do this.
 
 ### 1. Initializing White
 
-To get started, you'll need to initialize White with your secret API key. Here's how that looks (we're using a test key, so no real money will be exchanging hands):
+To get started, you'll need to initialize White with your secret API key. Here's how that looks (fear not .. we're using a test key, so no real money will be exchanging hands):
 
 ```php
 require_once('vendor/autoload.php'); # At the top of your PHP file
 
 # Initialize White object
-White::setApiKey('sk_test_1234567890abcdefghijklmnopq');
+White::setApiKey('test_sec_k_25dd497d7e657bb761ad6');
 ```
 
 That's it! You probably want to do something with the White object though -- it gets really bored when it doesn't have anything to do. 
@@ -43,19 +53,19 @@ Now, for the fun part. Here's all the code you need to process a transaction wit
 
 ```php
 White_Charge::create(array(
-  "amount" => 10.500,
-  "currency" => "bhd",
+  "amount" => 10500, // AED 105.00
+  "currency" => "aed",
   "card" => array(
     "number" => "4242424242424242",
     "exp_month" => 11,
-    "exp_year" => 2014,
+    "exp_year" => 2016,
     "cvv" => "123"
   ),
   "description" => "Charge for test@example.com"
 ));
 ```
 
-This transaction should be successful since we used the `4242 4242 4242 4242` test credit card. For a complete list of test cards, and their expected output you can check out this link [here](https://whitepayments.com/docs/).
+This transaction should be successful since we used the `4242 4242 4242 4242` test credit card. For a complete list of test cards, and their expected output you can check out this link [here](https://whitepayments.com/docs/testing/).
 
 How can you tell that it was successful? Well, if no exception is raised then you're in the clear.
 
@@ -66,18 +76,25 @@ Any errors that may occur during a transaction is raised as an Exception. Here's
 ```php
 try {
   // Use White's bindings...
-} catch(White_Error_Card $e) {
-  // Since it's a decline, White_Error_Card will be caught
+} catch(White_Error_Banking $e) {
+  // Since it's a decline, White_Error_Banking will be caught
   print('Status is:' . $e->getHttpStatus() . "\n");
   print('Code is:' . $e->getErrorCode() . "\n");
   print('Message is:' . $e->getMessage() . "\n");
-} catch (White_Error_Parameters $e) {
+
+} catch (White_Error_Request $e) {
   // Invalid parameters were supplied to White's API
+
+} catch (White_Error_Authentication $e) {
+  // There's a problem with that API key you provided
+
 } catch (White_Error $e) {
   // Display a very generic error to the user, and maybe send
   // yourself an email
+
 } catch (Exception $e) {
   // Something else happened, completely unrelated to White
+  
 }
 ```
 

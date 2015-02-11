@@ -21,18 +21,26 @@ class White
   * API Server URL
   * @var string
   */
-  protected static $baseURL = 'https://api.whitepayments.com';
+  protected static $baseURL = 'https://api.whitepayments.com/';
 
   /**
   * API endpoints
   * @var array
   */
   protected static $endpoints = array(
-    'charge'        => '/v1/charges',
-    'charge_list'   => '/v1/charges',
-    'customer'      => '/v1/customers',
-    'customer_list' => '/v1/customers'
+    'charge'        => 'charges/',
+    'charge_list'   => 'charges/',
+    'customer'      => 'customers/',
+    'customer_list' => 'customers/',
+    'refund'        => 'refunds/'
   );
+
+  /*
+  * Path to the CA Certificates required when making CURL calls
+  */
+  public static function getCaPath() {
+    return __DIR__ . '/data/ca-certificates.crt';
+  }
 
   /**
   * sets API Key
@@ -74,24 +82,27 @@ class White
     return self::$baseURL . self::$endpoints[$name];
   }
 
-  public static function handleErrors($result, $code)
-  {   
-      if($code == White_Error_Card::$CODE && $result['error']['type'] == White_Error_Card::$TYPE) {
-        throw new White_Error_Card($result['error']['message'], $result['error']['code']);
-      }
+  public static function handleErrors($result, $httpStatusCode)
+  {
+    switch($result['error']['type']) {
+      case White_Error_Authentication::$TYPE:
+        throw new White_Error_Authentication($result['error']['message'], $result['error']['code'], $httpStatusCode);
+        break;
 
-      if($code == White_Error_Parameters::$CODE) {
-        throw new White_Error_Parameters($result['error']['message'], $code);
-      }
-      
-      if($code == White_Error_Authentication::$CODE) {
-        throw new White_Error_Authentication($result['error']['message']);
-      }
-      
-      if($code >=500 && $code <600) { //Generic API error
-        throw new White_Error_Api($result['error']['message'], $code);
-      }
+      case White_Error_Banking::$TYPE:
+        throw new White_Error_Banking($result['error']['message'], $result['error']['code'], $httpStatusCode);
+        break;
 
-      throw new White_Error($result['error']['message'], $code);
+      case White_Error_Processing::$TYPE:
+        throw new White_Error_Processing($result['error']['message'], $result['error']['code'], $httpStatusCode);
+        break;
+
+      case White_Error_Request::$TYPE:
+        throw new White_Error_Request($result['error']['message'], $result['error']['code'], $httpStatusCode);
+        break;
+    }
+
+    // None of the above? Throw a general White Error
+    throw new White_Error($result['error']['message'], $result['error']['code'], $httpStatusCode);
   }
 }

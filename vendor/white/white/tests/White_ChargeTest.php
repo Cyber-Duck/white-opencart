@@ -5,7 +5,7 @@ class White_ChargeTest extends \PHPUnit_Framework_TestCase
 
   function setUp()
   {
-    White::setApiKey('sk_test_1234567890abcdefghijklmnopq');
+    White::setApiKey('test_sec_k_25dd497d7e657bb761ad6');
   }
 
   function testList()
@@ -17,12 +17,12 @@ class White_ChargeTest extends \PHPUnit_Framework_TestCase
   function testCreateSuccess()
   {
     $data = array(
-      "amount" => 10.500,
-      "currency" => "bhd",
+      "amount" => 1050,
+      "currency" => "usd",
       "card" => array(
         "number" => "4242424242424242",
         "exp_month" => 11,
-        "exp_year" => 2014,
+        "exp_year" => 2016,
         "cvc" => "123"
       ),
       "description" => "Charge for test@example.com"
@@ -31,17 +31,19 @@ class White_ChargeTest extends \PHPUnit_Framework_TestCase
     $result = White_Charge::create($data);
 
     $expected = array(
-      "tag" => "ch_3c513b0dfdc110b11b4091e2cbf6dc23",
-      "livemode" => true,
-      "amount" => "0.1",
-      "is_captured" => true,
-      "currency" => "bhd",
-      "is_paid" => null,
-      "is_refunded" => null, 
-      "description" => null,
-      "failure_code" => null,
-      "failure_message" => null,
-      "created_at" => "2014-08-14T16:20:53.451+03:00"
+      "id" => "ch_3c513b0dfdc110b11b4091e2cbf6dc23",
+      "amount" => "1050",
+      'currency' => "usd",
+      'description' => "Charge for test@example.com",
+      'state' => "captured",
+      'captured_amount' => 1050,
+      'refunded_amount' => 0,
+      'failure_reason' => '',
+      'failure_code' => '',
+      "created_at" => "2014-08-14T16:20:53.451+03:00",
+      "updated_at" => "2014-08-14T16:20:53.451+03:00",
+      'object' => "charge",
+      'card' => array()
     );
 
     $this->assertEquals(array_keys($expected), array_keys($result));
