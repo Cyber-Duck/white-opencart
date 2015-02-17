@@ -57,6 +57,8 @@ class ControllerPaymentWhite extends Controller
 
         $this->load->model('checkout/order');
 
+        $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+
         $error = null;
 
         try {
@@ -67,7 +69,9 @@ class ControllerPaymentWhite extends Controller
                 "amount"      => $this->request->post['amount'] * 100,
                 "currency"    => $this->request->post['currency'],
                 "card"        => $this->request->post['card'],
-                "description" => "Charge for order: " . $this->session->data['order_id']
+                "description" => "Charge for order: " . $this->session->data['order_id'],
+                "email"       => $order_info['email'],
+                "ip"          => $_SERVER['REMOTE_ADDR']
             ));
 
         } catch (White_Error $e) {
